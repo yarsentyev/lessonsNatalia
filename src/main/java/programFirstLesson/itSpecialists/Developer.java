@@ -2,7 +2,7 @@ package programFirstLesson.itSpecialists;
 
 import programFirstLesson.StaticDemo;
 
-public class Developer extends AbstractClassITSpecialist {
+public class Developer extends AbstractClassITSpecialists {
 
   Developer(){
     super();

@@ -1,13 +1,13 @@
 package programFirstLesson.itSpecialists;
 
-public class QA extends AbstractClassITSpecialist {
+public class QA extends AbstractClassITSpecialists {
 
   QA() {
     super();
   }
 
-  public QA(String name) {
-    super(name);
+  public QA(String n) {
+    super(n);
     this.position = "tester";
   }
 
