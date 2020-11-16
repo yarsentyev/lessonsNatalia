@@ -4,10 +4,6 @@ import programFirstLesson.StaticDemo;
 
 public class Developer extends AbstractClassITSpecialists {
 
-  Developer(){
-    super();
-  }
-
   public Developer(String name){
     super (name);
     this.position = "developer";

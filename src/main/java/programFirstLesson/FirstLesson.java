@@ -3,6 +3,9 @@ package programFirstLesson;
 import programFirstLesson.itSpecialists.Developer;
 import programFirstLesson.itSpecialists.ITSpecialist;
 import programFirstLesson.itSpecialists.QA;
+import programFirstLesson.robots.Robot;
+import programFirstLesson.robots.RobotBattleRobot;
+import programFirstLesson.robots.RobotSecretary;
 
 import java.util.*;
 
@@ -40,6 +43,18 @@ public class FirstLesson {
     ITSpecialist ba = new ITSpecialist("Катя", "Бизнес-аналитик");
     ba.getName();
     ba.doTasks();
+
+
+    //3*) Полиморфизм через интерфейсы
+    Robot cyberLady = new RobotSecretary();
+    Robot terminator = new RobotBattleRobot();
+
+
+    cyberLady.sayTheName();
+    cyberLady.doTheJob();
+    terminator.sayTheName();
+    terminator.doTheJob();
+
 
 // 4) Задание абстрактный класс
     // Экземпляр абстрактного класса создать нельзя
@@ -102,7 +117,7 @@ static { <тут что-то> }. Когда он будет выполнен? П
 // (для разнообразия не используй цикл из 10го пункта, почитай, какие есть циклы в Java) и распечатай имена специалистов.
     System.out.println();
     System.out.println("11 Interface List");
-    ArrayList <ITSpecialist>  listA = new ArrayList<ITSpecialist>();
+    ArrayList <ITSpecialist>  listA = new ArrayList();
     listA.add(dev);
     listA.add(qa);
     listA.add(ba);
@@ -112,18 +127,26 @@ static { <тут что-то> }. Когда он будет выполнен? П
 
     System.out.println("LinkedList");  // очень хотела сделать, чтобы в этом списке хранились объекты класс ITSpecialists
                                       //но либо не нашла, либо объекты не могут хранится в нем
-    LinkedList myLinkedList = new LinkedList();
+    LinkedList <ITSpecialist> myLinkedList = new LinkedList();
 
-    myLinkedList.add(dev.getName());
-    myLinkedList.add(qa.getName());
-    myLinkedList.add(ba.getName());
-    System.out.println(myLinkedList);
+    myLinkedList.add(dev);
+    myLinkedList.add(qa);
+    myLinkedList.add(ba);
+
+
+
+    for(ITSpecialist x: myLinkedList){     // Разновидность цикла for: for-each
+      System.out.println(x.getName() + " "+ x.getPosition());
+    }
 
     int i=0;
     while (i<myLinkedList.size()){  //пример цикла while
       System.out.println(myLinkedList.get(i));
       i++;
     }
+
+    //VIA STREAM
+    myLinkedList.stream().forEach(ITSpecialist::getName);
 
 /*12) Создай HashMap опять-таки из трех специалистов, где ключ - имя специалиста, а значение - сам объект-специалист.
 Циклом пройдись по HashMap и распечатай текст, включающий в себя имя спеца и работу, которую он делает
@@ -133,7 +156,7 @@ static { <тут что-то> }. Когда он будет выполнен? П
     System.out.println("Задание 12 HashMap");
     Map<String, ITSpecialist > hashMap = new HashMap<String, ITSpecialist>();
     hashMap.put(dev.getName(),dev); //Заполнение карты значениями
-    hashMap.put(qa.getName(),qa);  // В HashMap не может быть специалистов с одинаковым именем, т.к. имя в данном случае - ключ
+    hashMap.put(qa.getName(),qa);  // В HashMap не может быть специалистов с одинаковым именем, т.к. хэшкод от имени в данном случае - ключ
     hashMap.put(ba.getName(), ba); // при добавлении еще одного специалиста с одинак именем, предыдущее значение затрется
 
     for (Map.Entry<String, ITSpecialist> entry : hashMap.entrySet()) {
