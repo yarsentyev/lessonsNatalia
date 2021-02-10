@@ -238,8 +238,8 @@ static { <тут что-то> }. Когда он будет выполнен? П
     phoneStream1
             .map(p -> p.getName()) //помещаем в поток только названия телефонов
             .forEach(s -> System.out.println(s));
-
-/*? не находит методы takeWhile (выбирает из потока элементы, пока они соответствуют условию) and DropWhile
+/*
+// не находит методы takeWhile (выбирает из потока элементы, пока они соответствуют условию) and DropWhile
     //Получение подпотока и объединенные потоки на основе имеющихся
     System.out.println();
     System.out.println("Получение подпотока и объединенные потоки на основе имеющихся");
@@ -253,7 +253,7 @@ static { <тут что-то> }. Когда он будет выполнен? П
     System.out.println("Методы Skip and limit");
     Stream<Phone> phoneStream2 = Stream.of(new Phone("iPhone X2", 800), new Phone("Pixel 2", 700),
             new Phone("Nokia 2", 850), new Phone("Galaxy S2", 770));
-    phoneStream2.skip(1)
+    phoneStream2.skip(2)
             .limit(3)
             .forEach(s -> System.out.println(s.getName()));
 
@@ -328,7 +328,7 @@ static { <тут что-то> }. Когда он будет выполнен? П
 
     // Вторая версия reduce T reduce(T identity, BinaryOperator<T> accumulator)
     Stream<Integer> numberStream = Stream.of(-4, 3, -2, 1);
-    int identity = 5;
+    int identity = 0;
     int res = numberStream.reduce(identity, (x, y) -> x * y);//identity op n1 op n2 op n3 op n4...
     System.out.println(res);
 
