@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class GetPropertiesValues {
   public static final String PATH_TO_PROPERTIES = "application.properties";
-  String result = "";
+
   InputStream inputStream;
   public String login = "";
   public String psw = "";
