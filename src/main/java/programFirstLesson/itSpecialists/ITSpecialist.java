@@ -1,11 +1,15 @@
 package programFirstLesson.itSpecialists;
 
 public class ITSpecialist {
-  private String name;
+  public String name;
   private String position;
 
   public ITSpecialist(){
     this.name = " ";
+    this.position = " ";
+  }
+  public ITSpecialist(String name){
+    this.name = name;
     this.position = " ";
   }
 
