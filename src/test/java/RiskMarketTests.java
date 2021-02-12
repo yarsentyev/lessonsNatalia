@@ -66,6 +66,7 @@ public class RiskMarketTests {
     //Авторизация и получение всех необходимых параметров для работы
     Response clientIdRequest = RestAssured.given().log().all()
             .header("Content-Type", "application/json")
+            .header("X-XSRF-TOKEN", "null_csrf")
             .when().get("https://dev.riskmarket.tech/gateway/user-service/accounts/current");
     String clientIdFromResponse = clientIdRequest.getCookie("CLIENT-ID");
     System.out.println("client ID value from Response = " + clientIdFromResponse);
@@ -87,23 +88,22 @@ public class RiskMarketTests {
 
     String xSrfToken = authRequest.extract().cookie("XSRF-TOKEN");
     String authObject = authRequest.extract().cookie("authObject");
-    //String clientID = authRequest.extract().cookie("CLIENT-ID-VISIBLE");
-
+    String clientIdVisible = authRequest.extract().cookie("CLIENT-ID-VISIBLE");
     System.out.println("//////////////////////////////HINT/////////////////////");
+    System.out.println("clientIDVisible = " + clientIdVisible);
+    System.out.println("xSrfTokene = " + xSrfToken);
+
     // Считывание json из файла
     jsonParser js = new jsonParser();
     String jss = js.jsonToString();
 
     // Post на создание подсказки
     ValidatableResponse postHintrequest = RestAssured.given().log().all()
-            .header("X-XSRF-TOKEN", xSrfToken)
+            .cookie("XSRF-TOKEN", xSrfToken)
             .header("Content-Type", "application/json")
-            .header("CLIENT-ID", clientIdFromResponse)
-            .header("Host", "dev.riskmarket.tech")
-            .header("authObject", authObject)
-
-
-            .queryParams("grant_type", "password", "username", login, "password", psw)
+            .cookie("CLIENT-ID-VISIBLE", clientIdVisible)
+            .cookie("CLIENT-ID", clientIdFromResponse)
+            .cookie("authObject", authObject)
             .contentType(ContentType.JSON)
             .body(jss)
             .when().post("https://dev.riskmarket.tech/gateway/catalogue/hint/admin")
@@ -111,11 +111,8 @@ public class RiskMarketTests {
             .statusCode(200);
 
 
-
   }
 }
-
-
 /*
   @Test
   public void getAuthTokenTest() {
