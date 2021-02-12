@@ -12,7 +12,7 @@ abstract class AbstractClassITSpecialists{ //Объект абстрактног
     this.surname = "";
   }
 
-  AbstractClassITSpecialists (String name, String position, String surname){
+  AbstractClassITSpecialists(String name, String position, String surname){
     this.name = name;
     this.position = position;
     this.surname = surname;
