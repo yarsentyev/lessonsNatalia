@@ -1,17 +1,13 @@
 package resources;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-
 import java.io.FileReader;
 import java.io.Reader;
 
-public class jsonParser {
+public class JsonParser {
 
-  private String jsonPath = "C:\\Users\\Nata\\LessonsYuriy\\src\\main\\resources\\hintBody.json";
+  private String jsonPath = "C:\\SRDEV\\lessonsNatalia\\src\\main\\resources\\hintBody.json";
 
   public String jsonToString(){
     String bodyFromJson = "";
@@ -24,6 +20,7 @@ public class jsonParser {
     catch(Exception e){e.printStackTrace();}
     return bodyFromJson;
   }
+
 }
 
 

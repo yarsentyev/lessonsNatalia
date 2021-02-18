@@ -1,5 +1,5 @@
-{ "text": "text of the hint 2020",
+{ "text": "text of the hint 2021",
   "active": "true",
-  "insuranceTypes": [ ],
+  "insuranceTypes": ["Direct" ],
   "action": "NONE",
-  "countries": [ "RUSSIA" ] }
+  "countries": [ "RUSSIA124" ] }
