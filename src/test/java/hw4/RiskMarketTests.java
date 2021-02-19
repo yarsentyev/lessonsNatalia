@@ -18,7 +18,7 @@ public class RiskMarketTests extends BaseTest {
 
     // Тест обращается к google.com и проверяет, что в ответе получает StatusCode=200
   @Test
-  public void getRequestToGoogleTest() throws IOException {
+  public void getRequestToGoogleTest()  {
    RestAssured.
             when().get("https://google.com").
             then().assertThat().statusCode(200);
@@ -28,142 +28,61 @@ public class RiskMarketTests extends BaseTest {
   @Test
   public void adminAuthorizationRiskMarketTest() throws IOException {
 
-    property.getPropValues("admin");
-
-    ValidatableResponse r2 = getResponseWithCookies("https://dev.riskmarket.tech/gateway/user-service/oauth/token?remember-me=true");
-
-    String XsrfToken = r2.extract().cookie("XSRF-TOKEN");
-    String authObject = r2.extract().cookie("authObject");
+  authData = authorizationRM("admin");
+  System.out.println(authData);
   }
 
   //Создание подсказки админом и получение созданной подсказки
   @Test
   public void adminHintCreationRequestToRMTest() throws IOException {
-
     //Авторизация и получение всех необходимых параметров для работы
-       // Получение credentials из файла с properties
-    property.getPropValues("admin");
-
-    System.out.println("//////////////////////////////////////////////////////");
-    ValidatableResponse authRequest = getResponseWithCookies("https://dev.riskmarket.tech/gateway/user-service/oauth/token?remember-me=true");
-
-    String xSrfToken = authRequest.extract().cookie("XSRF-TOKEN");
-    String authObject = authRequest.extract().cookie("authObject");
-    String clientIdVisible = authRequest.extract().cookie("CLIENT-ID-VISIBLE");
+    // Получение credentials из файла с properties
+    authData = authorizationRM("admin");
 
     // Считывание json из файла
     JsonParser js = new JsonParser();
     String jss = js.jsonToString(jsonPath);
 
-    // Post на создание подсказки
-    ValidatableResponse postHintrequest = RestAssured.given().log().all()
-            .cookie("XSRF-TOKEN", xSrfToken)
-            .header("X-XSRF-TOKEN", xSrfToken)
-            .header("Content-Type", "application/json")
-            .header("CLIENT-ID-VISIBLE", clientIdVisible)
-            .header("CLIENT-ID", clientID)
-            .cookie("CLIENT-ID-VISIBLE", clientIdVisible)
-            .cookie("CLIENT-ID", clientID)
-            .cookie("authObject", authObject)
-            .contentType(ContentType.JSON)
-            .body(jss)
-            .when().post(RestAssured.basePath)
-            .then().log().all()
-            .statusCode(200);
-    // Получение id подсказки
-    System.out.println("id подсказки");
-    String hintID = postHintrequest.extract().body().asString();
-    System.out.println(hintID);
+    //создание подсказки
+    ValidatableResponse creationHintrequest = createHint(authData,jss)
+            .spec(responseCommonSpec());
+    String hintID = creationHintrequest.extract().body().asString();
 
-    //получение подсказки
-    Response  hintResponse = RestAssured.given().log().all()
-            .cookie("XSRF-TOKEN", xSrfToken)
-            .header("X-XSRF-TOKEN", xSrfToken)
-            .header("Content-Type", "application/json")
-            .header("CLIENT-ID-VISIBLE", clientIdVisible)
-            .header("CLIENT-ID", clientID)
-            .cookie("CLIENT-ID-VISIBLE", clientIdVisible)
-            .cookie("CLIENT-ID", clientID)
-            .cookie("authObject", authObject)
-            .contentType(ContentType.JSON)
-            .when().get(RestAssured.basePath + "/"+hintID);
-
-    Assert.assertEquals(200, hintResponse.getStatusCode());
-
-    checkGetHint(hintResponse.body().asString());
+   //получение подсказки
+    ValidatableResponse hint =  gettingOfHint(authData,hintID)
+            .spec(responseCommonSpec());
+    checkGetHint(hint.extract().body().asString());
   }
 
-  // Авторизация как Пользователь и получение параметров из Response
+  // Авторизованный пользователь пытается создать подсказку
   @Test
-  public void userAuthorizationRiskMarketTest() throws IOException {
+  public void userAuthCreateHintTest() throws IOException {
 
-    property.getPropValues("user");
-
-    ValidatableResponse userResponse = getResponseWithCookies(RestAssured.baseURI);
-
-    String XsrfToken = userResponse.extract().cookie("XSRF-TOKEN");
-    String authObject = userResponse.extract().cookie("authObject");
-    String clientIdVisible = userResponse.extract().cookie("CLIENT-ID-VISIBLE");
+    authData = authorizationRM("user");
 
     // Считывание json из файла
     JsonParser js = new JsonParser();
     String jss = js.jsonToString(jsonPath);
 
-    // Post на создание подсказки пользователем
-    ValidatableResponse postHintrequest = RestAssured.given().log().all()
-            .cookie("XSRF-TOKEN", XsrfToken)
-            .header("X-XSRF-TOKEN", XsrfToken)
-            .header("Content-Type", "application/json")
-            .header("CLIENT-ID-VISIBLE", clientIdVisible)
-            .header("CLIENT-ID", clientID)
-            .cookie("CLIENT-ID-VISIBLE", clientIdVisible)
-            .cookie("CLIENT-ID", clientID)
-            .cookie("authObject", authObject)
-            .contentType(ContentType.JSON)
-            .body(jss)
-            .when().post(RestAssured.basePath)
-            .then().log().all()
+    //Создание подсказки
+    ValidatableResponse creationHintrequest = createHint(authData,jss)
             .statusCode(403);
-
   }
+
+  //Авторизованный пользователь - запрос на получение подсказки, созданной админом
     @Test
-      public void  getHintAsUser() throws IOException {
-      property.getPropValues("user");
+      public void  userAuthGetHintTest() throws IOException {
+      authData = authorizationRM("user");
 
-      ValidatableResponse userResponse = getResponseWithCookies(RestAssured.baseURI);
-
-      String XsrfToken = userResponse.extract().cookie("XSRF-TOKEN");
-      String authObject = userResponse.extract().cookie("authObject");
-      String clientIdVisible = userResponse.extract().cookie("CLIENT-ID-VISIBLE");
+      // Считывание json из файла
+      JsonParser js = new JsonParser();
+      String jss = js.jsonToString(jsonPath);
 
       //Авторизованный пользователь получает подсказку, созданную администратором
-      Response hintResponse = RestAssured.given().log().all()
-              .cookie("XSRF-TOKEN", XsrfToken)
-              .header("X-XSRF-TOKEN", XsrfToken)
-              .header("Content-Type", "application/json")
-              .header("CLIENT-ID-VISIBLE", clientIdVisible)
-              .header("CLIENT-ID", clientID)
-              .cookie("CLIENT-ID-VISIBLE", clientIdVisible)
-              .cookie("CLIENT-ID", clientID)
-              .cookie("authObject", authObject)
-              .contentType(ContentType.JSON)
-              .when().get(RestAssured.basePath + "/6316");
-
-      Assert.assertEquals(200, hintResponse.getStatusCode());
-
-      checkGetHint(hintResponse.body().asString());
+      ValidatableResponse hint =  gettingOfHint(authData,"6327")
+              .spec(responseCommonSpec());
+      checkGetHint(hint.extract().body().asString());
     }
-
-  private ValidatableResponse getResponseWithCookies(String baseURI) {
-    return RestAssured.given().log().all()
-            .header("X-XSRF-TOKEN", "null_csrf")
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .cookie("CLIENT-ID", clientID)
-            .formParams("grant_type", "password", "username", property.login, "password", property.psw)
-            .when().post(baseURI).then().log().all()
-            .statusCode(200);
-  }
-
 
   // не авторизованный пользователь пытается получить подсказку
     @Test
