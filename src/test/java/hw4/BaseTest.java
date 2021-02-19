@@ -1,4 +1,4 @@
-package resources;
+package hw4;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -9,22 +9,28 @@ import org.junit.Before;
 
 public class BaseTest {
 
+    public static final String MAIN_PART_OF_URL = "https://dev.riskmarket.tech/gateway/";
     public String clientID = getClientID();
+    protected GetPropertiesValues property;
+    protected String jsonPath =  System.getProperty("user.dir") + "\\src\\test\\resources\\hintBody.json";
+    String XsrfToken;
+    String authObject;
+    String clientIdVisible;
 
     @Before
     public void setup(){
         //Авторизация
-        RestAssured.baseURI = "https://dev.riskmarket.tech/gateway/user-service/oauth/token?remember-me=true";
+        RestAssured.baseURI = MAIN_PART_OF_URL + "user-service/oauth/token?remember-me=true";
         //Создание_Получение подсказки
-        RestAssured.basePath = "https://dev.riskmarket.tech/gateway/catalogue/hint/admin";
-
-
+        RestAssured.basePath = MAIN_PART_OF_URL + "catalogue/hint/admin";
+        property = new GetPropertiesValues(); //получение credentials админа из файла application.properties
     }
+
 
     public String getClientID(){
         Response r1 = RestAssured.given().log().all()
                 .header("Content-Type", "application/json")
-                .when().get("https://dev.riskmarket.tech/gateway/user-service/accounts/current");
+                .when().get(MAIN_PART_OF_URL + "user-service/accounts/current");
 
         String clientIdFromResponse = r1.getCookie("CLIENT-ID");
         return clientIdFromResponse;

@@ -1,4 +1,4 @@
-package resources;
+package hw4;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package resources;
+package hw4;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -7,9 +7,7 @@ import java.io.Reader;
 
 public class JsonParser {
 
-  private String jsonPath = "C:\\SRDEV\\lessonsNatalia\\src\\main\\resources\\hintBody.json";
-
-  public String jsonToString(){
+  public String jsonToString(String jsonPath){
     String bodyFromJson = "";
     JSONParser parser = new JSONParser();
     try (Reader reader = new FileReader(jsonPath)) {
