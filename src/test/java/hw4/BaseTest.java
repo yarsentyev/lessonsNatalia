@@ -33,6 +33,19 @@ public class BaseTest {
         return builder.build();
     }
 
+    RequestSpecification requestCommonSpec(HashMap<String, String> authData){
+        return RestAssured.given().log().all()
+                .cookie("XSRF-TOKEN", authData.get("xSrfToken"))
+                .header("X-XSRF-TOKEN", authData.get("xSrfToken"))
+                .header("Content-Type", "application/json")
+                .header("CLIENT-ID-VISIBLE", authData.get("clientIdVisible"))
+                .header("CLIENT-ID", clientID)
+                .cookie("CLIENT-ID-VISIBLE", authData.get("clientIdVisible"))
+                .cookie("CLIENT-ID", clientID)
+                .cookie("authObject", authData.get("authObject"))
+                .contentType(ContentType.JSON);
+    }
+
     @Before
     public void setup() {
         //Авторизация
@@ -71,16 +84,7 @@ public class BaseTest {
 
     //Запрос на создание подсказки
     public ValidatableResponse  createHint(HashMap<String, String> authData, String jsonBody){
-       return RestAssured.given().log().all()
-                .cookie("XSRF-TOKEN", authData.get("xSrfToken"))
-                .header("X-XSRF-TOKEN", authData.get("xSrfToken"))
-                .header("Content-Type", "application/json")
-                .header("CLIENT-ID-VISIBLE", authData.get("clientIdVisible"))
-                .header("CLIENT-ID", clientID)
-                .cookie("CLIENT-ID-VISIBLE", authData.get("clientIdVisible"))
-                .cookie("CLIENT-ID", clientID)
-                .cookie("authObject", authData.get("authObject"))
-                .contentType(ContentType.JSON)
+       return requestCommonSpec(authData)
                 .body(jsonBody)
                 .when().post(RestAssured.basePath)
                 .then().log().all();
@@ -88,17 +92,7 @@ public class BaseTest {
 
     //получение подсказки
     public ValidatableResponse gettingOfHint(HashMap<String, String > authData, String hintID) {
-        return RestAssured.given().log().all()
-                .cookie("XSRF-TOKEN", authData.get("xSrfToken"))
-                .header("X-XSRF-TOKEN", authData.get("xSrfToken"))
-                .header("Content-Type", "application/json")
-                .header("CLIENT-ID-VISIBLE", authData.get("clientIdVisible"))
-                .header("CLIENT-ID", clientID)
-                .cookie("CLIENT-ID-VISIBLE", authData.get("clientIdVisible"))
-                .cookie("CLIENT-ID", clientID)
-                .cookie("authObject", authData.get("authObject"))
-                .contentType(ContentType.JSON)
-                .contentType(ContentType.JSON)
+        return requestCommonSpec(authData)
                 .when().get(RestAssured.basePath + "/" + hintID).then();
 
     }

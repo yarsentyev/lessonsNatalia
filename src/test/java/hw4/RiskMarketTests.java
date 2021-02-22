@@ -21,7 +21,7 @@ public class RiskMarketTests extends BaseTest {
   public void getRequestToGoogleTest()  {
    RestAssured.
             when().get("https://google.com").
-            then().assertThat().statusCode(200);
+            then().assertThat().spec(responseCommonSpec());
   }
 
   // Авторизация как Админ и получение параметров из Response
@@ -95,6 +95,8 @@ public class RiskMarketTests extends BaseTest {
                 userNonAuthResponse.prettyPrint();
         Assert.assertEquals(401, userNonAuthResponse.getStatusCode());
     }
+
+
 
 }
 
